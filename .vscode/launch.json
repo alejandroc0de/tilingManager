@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:tilingManager}",
+            "name": "Debug tilingManager",
+            "target": "tilingManager",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug tilingManager"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:tilingManager}",
+            "name": "Release tilingManager",
+            "target": "tilingManager",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release tilingManager"
+        }
+    ]
+}
