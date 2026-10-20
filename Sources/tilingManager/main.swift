@@ -33,8 +33,8 @@ guard let windows = attribute(appElement, kAXWindowsAttribute) as? [AXUIElement]
     exit(1)
 }
 
-print("\(windows.count) windows: ")
-for (index,window) in windows.enumerated(){
+print("\(windows.count) windows: ") // number of windows open 
+for (index,window) in windows.enumerated(){ // for to go tru the list and get the title of each active window 
     let title = (attribute(window,kAXTitleAttribute) as? String) ?? "(no title)"
     print("\(index+1) - \(title)")
 }
