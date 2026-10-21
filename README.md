@@ -35,7 +35,7 @@ The project is built to stay small and fast. It is a native Swift process with n
 Clone the repository and build it with Swift Package Manager:
 
 ```bash
-git clone https://github.com/<your-username>/tilingManager.git
+git clone https://github.com/alejandroc0de/tilingManager.git
 cd tilingManager
 swift build
 ```
@@ -101,14 +101,7 @@ tilingManager/
 - Shortcuts are currently fixed in code and cannot be configured.
 - The program runs from the terminal. It is not yet packaged as a standalone app.
 
-## Roadmap
-
-- More layouts: thirds, quarters, master and stack, grid
-- Move windows between screens with a shortcut
-- Configurable shortcuts through a config file
-- Package as a menu bar app with launch at login
-- Memory profiling to keep idle memory use as low as possible
 
 ## Contributing
 
-This is a personal learning project, but issues and suggestions are welcome. Feel free to open an issue or a pull request.
+This is a personal learning project, but issues and suggestions are welcome. Feel free to open an issue or a pull request. Thanks for reading!
