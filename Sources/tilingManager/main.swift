@@ -4,10 +4,12 @@ import Carbon.HIToolbox
 
 print("App is running")
 
-let options = ["AXTrustedCheckOptionPrompt":true] as CFDictionary
-let isTrusted = AXIsProcessTrustedWithOptions(options)
-
-print("Accessibility permision: \(isTrusted ? "Granted":"Missing")")
+let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
+guard AXIsProcessTrustedWithOptions(options) else {
+    print("Accessibility permission: Missing. Grant it to VS Code and restart VS Code.")
+    exit(1)
+}
+print("Accessibility permission: Granted")
 
 
 

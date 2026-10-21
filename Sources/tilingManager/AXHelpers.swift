@@ -1,4 +1,5 @@
 import ApplicationServices
+import AppKit // drawing windows, panels..
 
 // element is what we want to lookup and name the data we want to check
 func attribute(_ element: AXUIElement, _ name: String) -> CFTypeRef? { // -> we dont know what is returned (what data)
@@ -22,5 +23,39 @@ func setFrame(of window: AXUIElement, to rect: CGRect){ // OR (window: , rect: )
         let result = AXUIElementSetAttributeValue(window, kAXSizeAttribute as CFString, sizeValue) //kAXSize is a string with the name of the attribute we want to change
         // print("Set size to: ", result, result.rawValue)
     }
+}
+
+func frame(of window: AXUIElement) -> CGRect? {
+    guard let result = attribute(window, kAXSizeAttribute),
+    CFGetTypeID(result) == AXValueGetTypeID()
+    else{
+        print("Not a GUI VALUE")
+        return nil
+    }
+    var size = CGSize.zero
+    AXValueGetValue(result as! AXValue, .cgSize, &size)
+
+    guard let resultB = attribute(window, kAXPositionAttribute),
+    CFGetTypeID(resultB) == AXValueGetTypeID()
+    else {
+        print("Not a GUI Value")
+        return nil
+    }
+    var position = CGPoint.zero
+    AXValueGetValue(resultB as! AXValue, .cgPoint, &position)
+    let dimensions = CGRect(x: position.x, y: position.y, width: size.width, height: size.height)
+    return dimensions
+}   
+
+@MainActor
+func toAX(of rect: CGRect) -> CGRect? {
+    guard let mainScreen = NSScreen.screens.first else{
+        print("No screens found")
+        return nil
+    }
+    let screenHeight = mainScreen.frame.height
+    let newY = screenHeight - (rect.origin.y + rect.height)
+    let dimensions = CGRect(x: rect.origin.x, y: newY, width: rect.width, height: rect.height)
+    return dimensions
 }
 

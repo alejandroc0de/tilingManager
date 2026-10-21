@@ -24,15 +24,34 @@ func perform(_ action: WindowAction){
     // Turn the app into an AX element so we can ask details (AX element == UI element)
     let appElement = AXUIElementCreateApplication(app.processIdentifier) // creates a reference to this PID
 
+
     // --- What is the focused Window
     // 1. Ask for active window
-    guard let focusedRef = attribute(appElement,kAXFocusedWindowAttribute), // within the window open, what tab is opened? / , is and AND 
+    guard let focusedRef = attribute(appElement,kAXFocusedWindowAttribute), // within the window open, which of the apps windows is opened / , is and AND 
         CFGetTypeID(focusedRef) == AXUIElementGetTypeID() // Is it any GUI item? Or is it a error or nil 
         else{
             print("No focused Window")
             return
         }
     let focusedWindow = focusedRef as! AXUIElement // Forces cast, but we already checked before so no issue. We cast it as a GUI element
+
+    // Getting the windowFrame to identify the screen we are workin on
+    print("Dimensiones son : ") 
+    guard let windowFrame = frame(of: focusedWindow)
+    else {
+        print("No dimensions found for window")
+        return
+    }
+    let center = CGPoint(x: windowFrame.midX, y: windowFrame.midY)
+    print(center)
+
+
+    for screen in NSScreen.screens {
+        print(toAX(of: screen.frame))
+    }
+    
+
+    
 
     // ---- Get Usable Area and Convertion to AX cords
     guard let screen = NSScreen.screens.first else{
@@ -43,7 +62,6 @@ func perform(_ action: WindowAction){
     let visible = screen.visibleFrame
 
     // 3. Flipped coordinates convertion, NSscreen has diferent starting cords than AXUI 
-    print(visible.origin)
     let topY = screenHeight - (visible.origin.y + visible.height) // visible origin after dock measuares + rest of the screen VIEW NOTES
     let area = CGRect(x:visible.origin.x, y: topY, width: visible.width, height: visible.height ) // This is the work area
 
