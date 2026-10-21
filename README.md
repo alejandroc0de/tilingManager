@@ -11,18 +11,18 @@ The project is built to stay small and fast. It is a native Swift process with n
 - Snap the focused window to the left or right half of the screen
 - Maximize the focused window to the usable screen area (without covering the menu bar or Dock)
 - Minimize the focused window
-- Multi-monitor support: actions apply to the screen that contains the window
+- Multi-monitor support: actions apply to the screen that contains the window, in any monitor arrangement
 - Global shortcuts that work in any app
 - Runs as a background process with no Dock icon
 
 ## Keyboard shortcuts
 
-| Shortcut                        | Action                  |
-|---------------------------------|-------------------------|
-| Control + Option + Left Arrow   | Move window to left half |
+| Shortcut                        | Action                    |
+|---------------------------------|---------------------------|
+| Control + Option + Left Arrow   | Move window to left half  |
 | Control + Option + Right Arrow  | Move window to right half |
-| Control + Option + Up Arrow     | Maximize window         |
-| Control + Option + Down Arrow   | Minimize window         |
+| Control + Option + Up Arrow     | Maximize window           |
+| Control + Option + Down Arrow   | Minimize window           |
 
 ## Requirements
 
@@ -41,7 +41,6 @@ swift build
 ```
 
 ## Usage
-
 Run the program:
 
 ```bash
@@ -64,7 +63,7 @@ If the permission is missing, the program prints a message and exits.
 
 tilingManager uses three macOS APIs:
 
-- **Accessibility API (AXUIElement):** macOS has no public tiling API. Every app, window and control on screen is exposed as an accessibility element with attributes such as title, position, size and minimized state. tilingManager reads these attributes to find the focused window and writes the position and size attributes to move and resize it.
+- **Accessibility API (AXUIElement):** macOS has no public tiling API. Every app, window and control on screen is exposed as an accessibility element with attributes such as title, position, size and minimized state. tilingManager reads these attributes to find the focused window and its current frame, and writes the position and size attributes to move and resize it.
 - **Carbon hotkeys (RegisterEventHotKey):** registers system-wide keyboard shortcuts. This is the standard way to create global hotkeys on macOS and does not require additional permissions.
 - **AppKit (NSWorkspace, NSScreen, NSApplication):** finds the frontmost app, reads the size and layout of the connected screens, and runs the event loop that keeps the program alive and waiting for shortcuts.
 
@@ -72,36 +71,12 @@ When a shortcut is pressed, the program:
 
 1. Finds the frontmost application.
 2. Asks it for its focused window.
-3. Reads the window's frame and finds the screen that contains the center of the window.
-4. Calculates the target rectangle within that screen's usable area.
-5. Writes the new position and size to the window.
+3. Reads the window's frame (position and size) and calculates its center.
+4. Finds the screen whose frame contains that center. If none does, it falls back to the screen with the active window.
+5. Takes that screen's usable area (excluding the menu bar and Dock) and calculates the target rectangle for the action.
+6. Writes the new position and size to the window.
 
-### Coordinate systems
-
-The Accessibility API and AppKit use different coordinate systems. Accessibility coordinates start at the top-left corner of the primary screen, with y increasing downward. AppKit screen coordinates start at the bottom-left corner of the primary screen, with y increasing upward. tilingManager converts between them by flipping around the height of the primary screen, which is what makes the calculations correct on every connected monitor.
-
-## Project structure
-
-```
-tilingManager/
-  Package.swift              Swift package manifest (macOS 14 minimum)
-  Sources/tilingManager/
-    main.swift               Entry point: permission check, hotkey registration, event loop
-    AXHelpers.swift          Reading and writing window attributes through the Accessibility API
-    WindowActions.swift      Window actions, screen detection and layout math
-    HotKeys.swift            Global hotkey registration and event handling
-  Tests/tilingManagerTests/  Unit tests
-```
-
-## Known limitations
-
-- Windows in native full-screen mode cannot be moved or resized.
-- Some apps enforce a minimum or fixed window size, so the window may not fill the exact target area.
-- Minimized windows have to be restored from the Dock.
-- Shortcuts are currently fixed in code and cannot be configured.
-- The program runs from the terminal. It is not yet packaged as a standalone app.
-
+Screen positions are read again on every key press, so plugging in a monitor, unplugging one or changing the arrangement in System Settings works without restarting the program.
 
 ## Contributing
-
 This is a personal learning project, but issues and suggestions are welcome. Feel free to open an issue or a pull request. Thanks for reading!
