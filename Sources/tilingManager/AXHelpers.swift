@@ -11,7 +11,7 @@ func attribute(_ element: AXUIElement, _ name: String) -> CFTypeRef? { // -> we 
 // Function to move windows 
 func setFrame(of window: AXUIElement, to rect: CGRect){ // OR (window: , rect: ) the OF is to improve reading, rect is receive from main
     var origin = rect.origin // x,y cords
-    var size : rect.size // size of new window
+    var size = rect.size // size of new window
 
     //Pack (x,y) into a AXValue box to be able to write it. CGPoint is not readable by C API
     if let positionValue = AXValueCreate(.cgPoint, &origin){ //.cgPoint indicates type of data - &origin (use origin variable for data)
@@ -23,5 +23,5 @@ func setFrame(of window: AXUIElement, to rect: CGRect){ // OR (window: , rect: )
         let result = AXUIElementSetAttributeValue(window, kAXSizeAttribute as CFString, sizeValue) //kAXSize is a string with the name of the attribute we want to change
         print("Set size to: ", result, result.rawValue)
     }
-
 }
+

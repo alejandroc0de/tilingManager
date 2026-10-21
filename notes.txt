@@ -1,0 +1,12 @@
+// MATH MODEL FOR CALCULATING COORDS 
+Standar monitor = 1080 
+Dock = 50px high
+Menu Bar = 25px high 
+Visible Space = 1005px high 
+
+50 + 1005 = 1050 (Top edge of the screen would be 1050px in NSScreen cords)
+
+1080 - 1055 = 25 (So AX knows the top edge is 25px, there it can start drawing the window) TopY
+
+//----------------------------
+
