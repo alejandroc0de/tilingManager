@@ -47,6 +47,7 @@ func frame(of window: AXUIElement) -> CGRect? {
     return dimensions
 }   
 
+// this function received a rect with the dimensions of all screen and convert them into AX Dimmensions
 @MainActor
 func toAX(of rect: CGRect) -> CGRect? {
     guard let mainScreen = NSScreen.screens.first else{
@@ -59,3 +60,17 @@ func toAX(of rect: CGRect) -> CGRect? {
     return dimensions
 }
 
+@MainActor
+// Function to check in which window we working
+func findScreen(of screenPoint : CGPoint) -> NSScreen? {
+    for screen in NSScreen.screens{
+        guard let dimensions = toAX(of: screen.frame) else {
+            print(("Error trying to find current screen"))
+            return nil
+        }
+        if dimensions.contains(screenPoint){
+            return screen
+        }
+    }
+    return NSScreen.main // IF it doesnt find a screen returns main or active screen as a fallback
+}

@@ -45,31 +45,23 @@ func perform(_ action: WindowAction){
     let center = CGPoint(x: windowFrame.midX, y: windowFrame.midY)
     print(center)
 
-
-    for screen in NSScreen.screens {
-        print(toAX(of: screen.frame))
-    }
-    
-
-    
-
-    // ---- Get Usable Area and Convertion to AX cords
-    guard let screen = NSScreen.screens.first else{
-        print("No screens found")
+    // For to get all the dimensions in AX cords
+    guard let activeScreen = findScreen(of: center)
+    else{
+        print("No screen found")
         return
     }
-    let screenHeight = screen.frame.height
-    let visible = screen.visibleFrame
-
-    // 3. Flipped coordinates convertion, NSscreen has diferent starting cords than AXUI 
-    let topY = screenHeight - (visible.origin.y + visible.height) // visible origin after dock measuares + rest of the screen VIEW NOTES
-    let area = CGRect(x:visible.origin.x, y: topY, width: visible.width, height: visible.height ) // This is the work area
-
+    let visible = activeScreen.visibleFrame
+    guard let area = toAX(of: visible)else {
+        print("Error trying to get visible area on screen")
+        return
+    }
+    
     // --- Calculate rect to send to System 
     let target : CGRect
     switch action {
         case .leftHalf:
-            target = CGRect(x : visible.origin.x, y : topY, width : visible.width/2, height : visible.height)
+            target = CGRect(x : area.origin.x, y : area.minY , width : area.width/2, height : area.height)
         case .rightHalf:
             target = CGRect(x: area.minX + area.width / 2, y:area.minY, width: area.width/2, height: area.height)
         case .maximize:
