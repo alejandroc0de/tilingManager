@@ -18,7 +18,7 @@ func registerHotKey(keycode: Int, modifiers: Int, id:UInt32){ // this info will 
     }
 }
 
-// 
+// Bunch of stuff i dont really get 
 
 func installHotKeyHandler(){
     var eventType = EventTypeSpec( // what event are we waiting for?
